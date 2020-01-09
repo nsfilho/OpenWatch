@@ -1,7 +1,12 @@
 #include <M5StickC.h>
 #include "nixietube.h"
-#include "vfd_18x34.c"
-#include "vfd_35x67.c"
+#include "rtcutils.h"
+
+#ifndef NIXIE_CHARS
+#define NIXIE_CHARS
+#include "vfd_18x34.cpp"
+#include "vfd_35x67.cpp"
+#endif
 
 const uint8_t *n[] = { // vfd font 18x34
     vfd_18x34_0, vfd_18x34_1, vfd_18x34_2, vfd_18x34_3, vfd_18x34_4,
@@ -17,8 +22,6 @@ void nixietube_setup()
 
 void nixietube_2_line()
 {
-    M5.Rtc.GetTime(&RTC_TimeStruct);
-    M5.Rtc.GetData(&RTC_DateStruct);
     int h1 = int(RTC_TimeStruct.Hours / 10);
     int h2 = int(RTC_TimeStruct.Hours - h1 * 10);
     int i1 = int(RTC_TimeStruct.Minutes / 10);
@@ -39,14 +42,6 @@ void nixietube_2_line()
 
 void nixietube_1_line()
 {
-    M5.Rtc.GetTime(&RTC_TimeStruct);
-    M5.Rtc.GetData(&RTC_DateStruct);
-    //Serial.printf("Data: %04d-%02d-%02d\n",RTC_DateStruct.Year,RTC_DateStruct.Month,RTC_DateStruct.Date);
-    //Serial.printf("Week: %d\n",RTC_DateStruct.WeekDay);
-    //Serial.printf("Time: %02d : %02d : %02d\n",RTC_TimeStruct.Hours,RTC_TimeStruct.Minutes,RTC_TimeStruct.Seconds);
-    // Data: 2019-06-06
-    // Week: 0
-    // Time: 09 : 55 : 26
     int y1 = int(RTC_DateStruct.Year / 1000);
     int y2 = int((RTC_DateStruct.Year - y1 * 1000) / 100);
     int y3 = int((RTC_DateStruct.Year - y1 * 1000 - y2 * 100) / 10);
@@ -89,8 +84,6 @@ void nixietube_1_line()
 
 void nixietube_3_line()
 {
-    M5.Rtc.GetTime(&RTC_TimeStruct);
-    M5.Rtc.GetData(&RTC_DateStruct);
     int i1 = int(RTC_TimeStruct.Minutes / 10);
     int i2 = int(RTC_TimeStruct.Minutes - i1 * 10);
     int s1 = int(RTC_TimeStruct.Seconds / 10);

@@ -1,9 +1,18 @@
 #include <M5StickC.h>
 #include "rtcutils.h"
 
+RTC_TimeTypeDef RTC_TimeStruct;
+RTC_DateTypeDef RTC_DateStruct;
+
 const char *monthName[12] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+void getRTC_info()
+{
+    M5.Rtc.GetTime(&RTC_TimeStruct);
+    M5.Rtc.GetData(&RTC_DateStruct);
+}
 
 void setRTC_fromCompiler()
 {
@@ -13,7 +22,7 @@ void setRTC_fromCompiler()
     //012345678901234567890  Read data position: literal (x1) part
     //Jun  6 2019 07:20:41   String format
     char m1[3];
-    int m2; // Month conversion ( Jun to 6 )
+    int m2 = 1; // Month conversion ( Jun to 6 )
     (pt.substring(0, 3)).toCharArray(m1, 4);
     for (int mx = 0; mx < 12; mx++)
     {

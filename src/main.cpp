@@ -1,17 +1,12 @@
 #include <M5StickC.h>
 #include "config.h"
 #include "main.h"
-#include "button.h"
 #include "rtcutils.h"
 #include "nixietube/nixietube.h"
-
-RTC_TimeTypeDef RTC_TimeStruct;
-RTC_DateTypeDef RTC_DateStruct;
 
 byte watchInterface = 0;       // Which watch interface to render
 unsigned long wakeupTime = 0;  // Contains wake up (from sleep) millis
 unsigned long lastRefresh = 0; // Control last watchInterface refresh
-DebouncingButton button = DebouncingButton(M5_BUTTON_HOME);
 
 void setup(void)
 {
@@ -25,15 +20,31 @@ void setup(void)
 
 void loop(void)
 {
-    // Ações do botão
-    if (button.wasClicked() > 0)
+    M5.update();
+    if (M5.BtnA.wasPressed() != 0)
     {
         watchInterface = (watchInterface == 3 ? 1 : watchInterface + 1);
         M5.Lcd.fillScreen(BLACK);
+        change_watch_interface();
+        wakeupTime = millis();
     }
-
     update_watch_interface();
     check_wakeup_timeout();
+}
+
+/**
+ * Setup a new watch interface
+ */
+void change_watch_interface(void)
+{
+    switch (watchInterface)
+    {
+    case 1:
+    case 2:
+    case 3:
+        nixietube_setup();
+        break;
+    }
 }
 
 /**
@@ -43,6 +54,7 @@ void update_watch_interface(void)
 {
     if (millis() - lastRefresh > REFRESH_TIME)
     {
+        getRTC_info();
         switch (watchInterface)
         {
         case 1:
@@ -59,6 +71,13 @@ void update_watch_interface(void)
     }
 }
 
+/**
+ * Check if is the time to sleep
+ */
 void check_wakeup_timeout(void)
 {
+    if (millis() - wakeupTime > SCREEN_WAKEUP_TIMEOUT)
+    {
+        M5.Axp.LightSleep(0);
+    }
 }
