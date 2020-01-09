@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "zshrc": "shellscript",
+        "m5stickc.h": "c"
+    }
+}
