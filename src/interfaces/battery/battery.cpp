@@ -2,19 +2,19 @@
 #include "main.h"
 #include "battery.h"
 
-void Battery::setup()
+void BatteryInterface::setup()
 {
     M5.Lcd.setRotation(3);
     M5.Axp.EnableCoulombcounter();
     tftSprite.setRotation(3);
 }
 
-void Battery::finish()
+void BatteryInterface::finish()
 {
     M5.Axp.DisableCoulombcounter();
 }
 
-void Battery::loop()
+void BatteryInterface::loop()
 {
     tftSprite.fillSprite(BLACK);
     tftSprite.setCursor(0, 0, 1);
