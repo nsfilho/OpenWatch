@@ -10,4 +10,10 @@
 /** Delay between update time in watch screen interface */
 #define REFRESH_TIME 1000
 
+extern byte screen_brightness;
+extern byte watchInterface;
+
+void loadConfig();
+void saveConfig();
+
 #endif

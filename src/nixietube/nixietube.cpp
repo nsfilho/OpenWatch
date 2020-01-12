@@ -18,29 +18,25 @@ const uint8_t *m[] = { // vfd font 35x67
 void nixietube_setup()
 {
     M5.Lcd.setRotation(3);
+    M5.Lcd.fillScreen(BLACK);
 }
 
-void nixietube_2_line()
+void NixieTube1::setup()
 {
-    int h1 = int(RTC_TimeStruct.Hours / 10);
-    int h2 = int(RTC_TimeStruct.Hours - h1 * 10);
-    int i1 = int(RTC_TimeStruct.Minutes / 10);
-    int i2 = int(RTC_TimeStruct.Minutes - i1 * 10);
-    int s1 = int(RTC_TimeStruct.Seconds / 10);
-    int s2 = int(RTC_TimeStruct.Seconds - s1 * 10);
-    M5.Lcd.pushImage(2, 0, 35, 67, (uint16_t *)m[h1]);
-    M5.Lcd.pushImage(41, 0, 35, 67, (uint16_t *)m[h2]);
-    M5.Lcd.drawPixel(79, 22, ORANGE);
-    M5.Lcd.drawPixel(79, 48, ORANGE);
-    M5.Lcd.drawPixel(79, 21, YELLOW);
-    M5.Lcd.drawPixel(79, 47, YELLOW);
-    M5.Lcd.pushImage(83, 0, 35, 67, (uint16_t *)m[i1]);
-    M5.Lcd.pushImage(121, 0, 35, 67, (uint16_t *)m[i2]);
-    M5.Lcd.pushImage(120, 45, 18, 34, (uint16_t *)n[s1]);
-    M5.Lcd.pushImage(140, 45, 18, 34, (uint16_t *)n[s2]);
+    nixietube_setup();
 }
 
-void nixietube_1_line()
+void NixieTube2::setup()
+{
+    nixietube_setup();
+}
+
+void NixieTube3::setup()
+{
+    nixietube_setup();
+}
+
+void NixieTube1::loop()
 {
     int y1 = int(RTC_DateStruct.Year / 1000);
     int y2 = int((RTC_DateStruct.Year - y1 * 1000) / 100);
@@ -82,7 +78,27 @@ void nixietube_1_line()
     M5.Lcd.pushImage(140, 40, 18, 34, (uint16_t *)n[s2]);
 }
 
-void nixietube_3_line()
+void NixieTube2::loop()
+{
+    int h1 = int(RTC_TimeStruct.Hours / 10);
+    int h2 = int(RTC_TimeStruct.Hours - h1 * 10);
+    int i1 = int(RTC_TimeStruct.Minutes / 10);
+    int i2 = int(RTC_TimeStruct.Minutes - i1 * 10);
+    int s1 = int(RTC_TimeStruct.Seconds / 10);
+    int s2 = int(RTC_TimeStruct.Seconds - s1 * 10);
+    M5.Lcd.pushImage(2, 0, 35, 67, (uint16_t *)m[h1]);
+    M5.Lcd.pushImage(41, 0, 35, 67, (uint16_t *)m[h2]);
+    M5.Lcd.drawPixel(79, 22, ORANGE);
+    M5.Lcd.drawPixel(79, 48, ORANGE);
+    M5.Lcd.drawPixel(79, 21, YELLOW);
+    M5.Lcd.drawPixel(79, 47, YELLOW);
+    M5.Lcd.pushImage(83, 0, 35, 67, (uint16_t *)m[i1]);
+    M5.Lcd.pushImage(121, 0, 35, 67, (uint16_t *)m[i2]);
+    M5.Lcd.pushImage(120, 45, 18, 34, (uint16_t *)n[s1]);
+    M5.Lcd.pushImage(140, 45, 18, 34, (uint16_t *)n[s2]);
+}
+
+void NixieTube3::loop()
 {
     int i1 = int(RTC_TimeStruct.Minutes / 10);
     int i2 = int(RTC_TimeStruct.Minutes - i1 * 10);

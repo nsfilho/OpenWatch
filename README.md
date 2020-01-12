@@ -4,6 +4,11 @@ This is a opensource watch interface for M5Stick-C hardware.
 
 [M5Stick-C Hardware](https://youtu.be/ppXkl0046dc)
 
+# Features
+
+1. Change watch faces when press M5 Home button;
+1. Light Sleep after "N" milleseconds without interaction;
+
 # Developers
 
 As requisite you need:
