@@ -64,7 +64,7 @@ void update_watch_interface(void)
         Serial.print(": Refreshing watch interface: ");
         Serial.print(config.screen_watchInterface);
         Serial.print(" / ");
-        Serial.println(interfaces.totalInterfaces);
+        Serial.println(interfaces.totalInterfaces - 1);
 #endif
         getRTC_info();
         interfaces.loopInterface();
@@ -77,6 +77,9 @@ void update_watch_interface(void)
  */
 void check_wakeup_timeout(void)
 {
+    if (config.noSleep)
+        return;
+
     if (millis() - wakeupTime > config.screen_wakeup_timeout)
     {
 #ifdef DEBUG_WATCH

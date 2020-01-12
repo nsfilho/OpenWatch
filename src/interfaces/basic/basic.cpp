@@ -32,8 +32,3 @@ void BasicInterface::loop()
 
     tftSprite.pushSprite(0, 0);
 }
-
-void BasicInterface::pressB()
-{
-    myFont++;
-}

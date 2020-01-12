@@ -3,12 +3,14 @@
 #include "nixietube/nixietube.h"
 #include "battery/battery.h"
 #include "basic/basic.h"
+#include "ntp/ntpInterface.h"
 
 NixieTube1 i1 = NixieTube1();
 NixieTube2 i2 = NixieTube2();
 NixieTube3 i3 = NixieTube3();
 BatteryInterface i4 = BatteryInterface();
 BasicInterface i5 = BasicInterface();
+NtpInterface i6 = NtpInterface();
 
 Interfaces::Interfaces()
 {
@@ -22,6 +24,7 @@ void Interfaces::begin()
     addInterface(&i3);
     addInterface(&i4);
     addInterface(&i5);
+    addInterface(&i6);
     Serial.println("Interfaces: loaded!");
 }
 

@@ -4,6 +4,8 @@
 #include "main.h"
 #include "interfaces/interfaces.h"
 
+#define DEBUG_WATCH 1
+
 StaticJsonDocument<512> doc;
 
 Config::Config()
@@ -12,6 +14,7 @@ Config::Config()
     screen_brightness = SCREEN_BRIGHTNESS;
     screen_wakeup_timeout = SCREEN_WAKEUP_TIMEOUT;
     screen_refreshTime = REFRESH_TIME;
+    noSleep = false;
 }
 
 void Config::begin()
@@ -83,6 +86,43 @@ void Config::save()
         doc["screen"]["refreshTime"] = screen_refreshTime;
         doc["screen"]["wakeupTimeout"] = screen_wakeup_timeout;
         serializeJson(doc, config);
+#ifdef DEBUG_WATCH
+        serializeJsonPretty(doc, Serial);
+#endif
         config.close();
     }
+}
+
+int Config::existsNetwork(String name)
+{
+    JsonArray wifis = doc["wifi"];
+    for (int x = 0; x < wifis.size(); x++)
+    {
+        JsonVariant wifi_config = wifis.getElement(x);
+        const char *wifi_ssid = wifi_config["ssid"].as<char *>();
+#ifdef DEBUG_WATCH
+        Serial.print("     ");
+        Serial.print(x);
+        Serial.print(": Comparing: [");
+        Serial.print(name);
+        Serial.print("] with [");
+        Serial.print(wifi_ssid);
+        Serial.println("]");
+#endif
+        if (strcmp(name.c_str(), wifi_ssid) == 0)
+            return x;
+    }
+    return -1;
+}
+
+String Config::getNetworkPassword(String name)
+{
+    JsonArray wifis = doc["wifi"];
+    int network_index = existsNetwork(name);
+    if (network_index > -1)
+    {
+        JsonVariant wifi_config = wifis.getElement(network_index);
+        return wifi_config["password"].as<String>();
+    }
+    return String();
 }

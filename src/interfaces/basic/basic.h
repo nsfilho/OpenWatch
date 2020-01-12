@@ -8,7 +8,6 @@ class BasicInterface : public WatchInterface
 public:
     void setup();
     void loop();
-    void pressB();
 };
 
 #endif

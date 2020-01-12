@@ -12,7 +12,7 @@
 #define REFRESH_TIME 1000
 
 /** Definitions for Battery Measure */
-#define MAX_VOLTAGE 4.2
+#define MAX_VOLTAGE 4.1
 #define MIN_VOLTAGE 3.7
 
 class Config
@@ -23,6 +23,7 @@ private:
 public:
     byte screen_brightness;
     byte screen_watchInterface;
+    bool noSleep;
     unsigned int screen_refreshTime;
     unsigned long screen_wakeup_timeout;
     Config();
@@ -33,6 +34,8 @@ public:
     void nextScreenBrightness(void);
     void save(void);
     void load(void);
+    int existsNetwork(String name);
+    String getNetworkPassword(String name);
 };
 
 #endif
