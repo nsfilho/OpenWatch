@@ -4,6 +4,7 @@
         "m5stickc.h": "c",
         "m5display.h": "c",
         "fs.h": "c",
-        "memory": "c"
+        "memory": "c",
+        "array": "cpp"
     }
 }

@@ -6,6 +6,7 @@
 extern Config config;
 extern Interfaces interfaces;
 extern TFT_eSprite tftSprite;
+extern unsigned long wakeupTime;
 
 void setup(void);
 void loop(void);

@@ -11,6 +11,10 @@
 /** Delay between update time in watch screen interface */
 #define REFRESH_TIME 1000
 
+/** Definitions for Battery Measure */
+#define MAX_VOLTAGE 4.2
+#define MIN_VOLTAGE 3.7
+
 class Config
 {
 private:

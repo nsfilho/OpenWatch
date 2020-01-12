@@ -15,6 +15,7 @@ unsigned long lastRefresh = 0; // Control last watchInterface refresh
 void setup(void)
 {
     M5.begin(true, true, true);
+    WiFi.disconnect(true);
     M5.Lcd.fillScreen(BLACK);
     tftSprite.createSprite(160, 80);
     // setRTC_fromCompiler();
