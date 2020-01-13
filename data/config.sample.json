@@ -1,0 +1,13 @@
+{
+    "screen": {
+        "brightness": 8,
+        "watchInterface": 0,
+        "refreshTime": 1000,
+        "wakeupTimeout": 20000
+    },
+    "wifi": [{ "ssid": "yourNetwork", "password": "yourPassword" }],
+    "ntp": {
+        "offset": -10800,
+        "server": "a.ntp.br"
+    }
+}
