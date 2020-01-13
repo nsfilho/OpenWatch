@@ -8,6 +8,8 @@
 Config config = Config();
 Interfaces interfaces = Interfaces();
 TFT_eSprite tftSprite = TFT_eSprite(&M5.Lcd);
+NTPUtils ntpUtils = NTPUtils();
+Network network = Network();
 
 unsigned long wakeupTime = 0;  // Contains wake up (from sleep) millis
 unsigned long lastRefresh = 0; // Control last watchInterface refresh
@@ -50,6 +52,7 @@ void loop(void)
     }
     update_watch_interface();
     check_wakeup_timeout();
+    ntpUtils.loop();
 }
 
 /**

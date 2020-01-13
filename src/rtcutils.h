@@ -8,5 +8,6 @@ extern const char *monthName[12];
 
 void getRTC_info();
 void setRTC_fromCompiler();
+void setRTC_fromNTP(String value);
 
 #endif

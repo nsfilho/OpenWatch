@@ -126,3 +126,13 @@ String Config::getNetworkPassword(String name)
     }
     return String();
 }
+
+String Config::getNTPServer()
+{
+    return doc["ntp"]["server"];
+}
+
+int Config::getNTPOffset()
+{
+    return doc["ntp"]["offset"];
+}

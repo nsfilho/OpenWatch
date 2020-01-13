@@ -1,5 +1,4 @@
 #include <M5StickC.h>
-#include <WiFi.h>
 #include "main.h"
 #include "ntpInterface.h"
 
@@ -32,51 +31,27 @@ void NtpInterface::loop()
 
 void NtpInterface::pressB()
 {
-    messageToDisplay = "Scanning Wi-Fi...";
+    messageToDisplay = "Trying connect to Wi-Fi!";
     loop();
-    byte totalNetworks = WiFi.scanNetworks(false, false, false, 500);
-    for (byte x = 0; x < totalNetworks; x++)
+    if (network.begin())
     {
-        String network_name = WiFi.SSID(x);
-        Serial.print("SSID: ");
-        Serial.print(WiFi.SSID(x));
-        Serial.print(" - RSSI: ");
-        Serial.print(WiFi.RSSI(x));
-        Serial.println("");
-
-        int network_index = config.existsNetwork(network_name);
-        if (network_index >= 0)
-        {
-            messageToDisplay = "Connecting to: " + network_name;
-            loop();
-
-            WiFi.begin(network_name.c_str(), config.getNetworkPassword(network_name).c_str());
-            unsigned long tryingConnect = millis();
-            while (!WiFi.isConnected() && millis() - tryingConnect < 5000)
-            {
-                messageToDisplay = "Connecting to: " + network_name + "\n(" + String(millis() - tryingConnect) + ")";
-                loop();
-                delay(100);
-            }
-        }
-        else
-        {
-        }
-        Serial.println("");
-    }
-
-    if (WiFi.isConnected())
-    {
-        messageToDisplay = "Updating RTC with NTP...";
+        messageToDisplay = "Updating RTC with NTP!";
+        loop();
+        ntpUtils.begin();
+        ntpUtils.update();
+        ntpUtils.end();
+        messageToDisplay = "RTC updated!";
+        loop();
     }
     else
     {
-        messageToDisplay = "Failed to find valid Wi-Fi...";
+        messageToDisplay = "Failed to connect Wi-Fi!";
     }
+    network.end();
 }
 
 void NtpInterface::finish()
 {
     config.noSleep = false;
-    WiFi.disconnect(true);
+    network.end();
 }

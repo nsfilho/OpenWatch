@@ -36,6 +36,8 @@ public:
     void load(void);
     int existsNetwork(String name);
     String getNetworkPassword(String name);
+    String getNTPServer();
+    int getNTPOffset();
 };
 
 #endif
