@@ -7,8 +7,8 @@ int myFont = 1;
 
 void BasicInterface::setup()
 {
-    M5.Lcd.setRotation(3);
-    tftSprite.setRotation(3);
+    M5.Lcd.setRotation(SCREEN_ROTATION);
+    tftSprite.setRotation(SCREEN_ROTATION);
     tftSprite.fillScreen(BLACK);
 }
 

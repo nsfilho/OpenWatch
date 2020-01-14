@@ -1,4 +1,6 @@
 #include <M5StickC.h>
+#include "main.h"
+#include "config.h"
 #include "nixietube.h"
 #include "rtcutils.h"
 
@@ -17,7 +19,7 @@ const uint8_t *m[] = { // vfd font 35x67
 
 void nixietube_setup()
 {
-    M5.Lcd.setRotation(3);
+    M5.Lcd.setRotation(SCREEN_ROTATION);
     M5.Lcd.fillScreen(BLACK);
 }
 

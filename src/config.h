@@ -2,6 +2,9 @@
 #define __CONFIG_H_
 #include <M5StickC.h>
 
+/** Screen default rotation */
+#define SCREEN_ROTATION 3
+
 /** Maximum screen brightness */
 #define SCREEN_BRIGHTNESS 8
 
@@ -15,6 +18,11 @@
 #define MAX_VOLTAGE 4.1
 #define MIN_VOLTAGE 3.7
 
+/** Network definitions */
+#define NETWORK_CONNECTION_TIMEOUT 5000
+#define NETWORK_CONNECTION_DELAY 100
+#define NETWORK_STATUS_DISPLAY 2000
+
 class Config
 {
 private:
@@ -24,6 +32,7 @@ public:
     byte screen_brightness;
     byte screen_watchInterface;
     bool noSleep;
+    unsigned int network_connection_timeout;
     unsigned int screen_refreshTime;
     unsigned long screen_wakeup_timeout;
     Config();

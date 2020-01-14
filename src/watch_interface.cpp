@@ -7,7 +7,8 @@
 
 void WatchInterface::setup()
 {
-    M5.Lcd.setRotation(3);
+    M5.Lcd.setRotation(SCREEN_ROTATION);
+    tftSprite.setRotation(SCREEN_ROTATION);
 }
 
 void WatchInterface::loop()

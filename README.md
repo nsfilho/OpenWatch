@@ -11,6 +11,13 @@ This is a opensource watch interface for M5Stick-C hardware.
 1. In most of Watch Interfaces when you press `button B`, you change the brightness;
 1. All configurations are stored in SPIFFS File (`/config.json`)
 1. Easly to add new watch interfaces;
+1. Added a Wi-Fi connection (status notification) overlay;
+
+# Next Features
+
+1. Add a BLE Support;
+1. Add notification system from Smartphone;
+1. Companion app to configure;
 
 # Developers
 

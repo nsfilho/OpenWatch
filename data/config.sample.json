@@ -9,5 +9,8 @@
     "ntp": {
         "offset": -10800,
         "server": "a.ntp.br"
+    },
+    "network": {
+        "connectionTimeout": 5000
     }
 }

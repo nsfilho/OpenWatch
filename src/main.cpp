@@ -1,28 +1,38 @@
-#define DEBUG_WATCH
+/**
+ * Main Framework File
+ */
+#undef DEBUG_WATCH
 
 #include <M5StickC.h>
 #include <WiFi.h>
 #include "main.h"
 #include "rtcutils.h"
 
+/** Instantiate the shared class and objects */
 Config config = Config();
 Interfaces interfaces = Interfaces();
 TFT_eSprite tftSprite = TFT_eSprite(&M5.Lcd);
 NTPUtils ntpUtils = NTPUtils();
 Network network = Network();
 
+/** Controls variables */
 unsigned long wakeupTime = 0;  // Contains wake up (from sleep) millis
 unsigned long lastRefresh = 0; // Control last watchInterface refresh
 
+/**
+ * Main Setup - Executed after PowerOn and DeepSleep.
+ */
 void setup(void)
 {
     M5.begin(true, true, true);
     WiFi.disconnect(true);
     M5.Lcd.fillScreen(BLACK);
+    tftSprite.setColorDepth(16);
     tftSprite.createSprite(160, 80);
     // setRTC_fromCompiler();
     config.begin();
     interfaces.begin();
+    M5.Axp.ScreenBreath(config.screen_brightness);
     interfaces.setupInterface();
     wakeupTime = millis();
     lastRefresh = millis();
@@ -34,6 +44,8 @@ void setup(void)
 void loop(void)
 {
     M5.update();
+
+    /** Button A: Key pressed */
     if (M5.BtnA.wasPressed() != 0)
     {
 #ifdef DEBUG_WATCH
@@ -42,6 +54,8 @@ void loop(void)
         wakeupTime = millis();
         interfaces.pressA();
     }
+
+    /** Button B: Key pressed */
     if (M5.BtnB.wasPressed() != 0)
     {
 #ifdef DEBUG_WATCH
@@ -50,13 +64,15 @@ void loop(void)
         wakeupTime = millis();
         interfaces.pressB();
     }
+
     update_watch_interface();
     check_wakeup_timeout();
     ntpUtils.loop();
+    network.loop();
 }
 
 /**
- * Start a routine to update the watch screen interface (time)
+ * Routine to update the watch screen interface (time)
  */
 void update_watch_interface(void)
 {

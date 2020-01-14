@@ -5,9 +5,9 @@
 
 void BatteryInterface::setup()
 {
-    M5.Lcd.setRotation(3);
     M5.Axp.EnableCoulombcounter();
-    tftSprite.setRotation(3);
+    M5.Lcd.setRotation(SCREEN_ROTATION);
+    tftSprite.setRotation(SCREEN_ROTATION);
 }
 
 void BatteryInterface::finish()
