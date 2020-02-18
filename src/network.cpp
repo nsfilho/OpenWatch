@@ -3,9 +3,6 @@
 #include "main.h"
 #include "network.h"
 
-/** Sprite specific for network stack */
-TFT_eSprite tftSpriteStatus = TFT_eSprite(&M5.Lcd);
-
 /**
  * Instantiate network class
  */
@@ -17,10 +14,8 @@ Network::Network()
 /**
  * Scan all available networks and try to connect
  */
-bool Network::begin()
+void Network::begin()
 {
-    tftSprite.setRotation(SCREEN_ROTATION);
-    tftSpriteStatus.createSprite(120, 40);
     _status = WN_SCANNING;
     WiFi.scanNetworks(true, false, false, 500);
 }
@@ -36,12 +31,16 @@ watch_network_status_t Network::status()
 /**
  * Async routines
  */
-void Network::loop()
+bool Network::loop()
 {
     if (_status == WN_SCANNING && WiFi.scanComplete() >= 0)
         checkKnowsNetwork();
     if (_status != WN_OFF)
+    {
         displayStatus();
+        return true;
+    }
+    return false;
 }
 
 void Network::displayStatus()
@@ -53,37 +52,37 @@ void Network::displayStatus()
             displayStarted = millis();
             _lastStatus = _status;
         }
-        tftSpriteStatus.fillSprite(BLACK);
-        tftSpriteStatus.drawRect(0, 0, 120, 40, WHITE);
-        tftSpriteStatus.drawBitmap(5, 5, wifi_logo, 40, 30, WHITE);
-        tftSpriteStatus.setTextColor(WHITE);
-        tftSpriteStatus.setCursor(50, 5, 1);
+        tftSprite.fillRect(20, 20, 120, 40, BLACK);
+        tftSprite.drawRect(20, 20, 120, 40, WHITE);
+        tftSprite.drawBitmap(25, 25, wifi_logo, 40, 30, WHITE);
+        tftSprite.setCursor(70, 25, 1);
+        tftSprite.setTextColor(WHITE);
+        tftSprite.setTextSize(1);
         switch (_status)
         {
         case WN_CONNECTING:
-            tftSpriteStatus.print("Connecting");
-            tftSpriteStatus.setCursor(50, 20);
-            tftSpriteStatus.print(WiFi.SSID().c_str());
+            tftSprite.print("Connecting");
+            tftSprite.setCursor(70, 40);
+            tftSprite.print(WiFi.SSID().c_str());
             break;
         case WN_CONNECTED:
-            tftSpriteStatus.print("Connected");
-            tftSpriteStatus.setCursor(50, 20);
-            tftSpriteStatus.print(WiFi.SSID().c_str());
+            tftSprite.print("Connected");
+            tftSprite.setCursor(70, 40);
+            tftSprite.print(WiFi.SSID().c_str());
             break;
         case WN_FAILED:
-            tftSpriteStatus.print("Failed");
+            tftSprite.print("Failed");
             break;
         case WN_NO_AVAILABLE:
-            tftSpriteStatus.print("No available");
+            tftSprite.print("No available");
             break;
         case WN_SCANNING:
-            tftSpriteStatus.print("Scanning...");
+            tftSprite.print("Scanning...");
             break;
         case WN_OFF:
-            tftSpriteStatus.print("Off");
+            tftSprite.print("Off");
             break;
         }
-        tftSpriteStatus.pushSprite(20, 20);
     }
 }
 
@@ -137,5 +136,4 @@ void Network::end()
 {
     _status = WN_OFF;
     WiFi.disconnect(true);
-    tftSpriteStatus.deleteSprite();
 }

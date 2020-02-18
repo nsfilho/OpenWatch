@@ -15,7 +15,7 @@ extern unsigned long wakeupTime;
 
 void setup(void);
 void loop(void);
-void update_watch_interface(void);
+bool update_watch_interface(void);
 void check_wakeup_timeout(void);
 
 #endif

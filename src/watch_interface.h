@@ -4,8 +4,17 @@
 class WatchInterface
 {
 public:
-    virtual void setup();
-    virtual void loop();
+    /** 
+     * Setup a watch interface
+     * Return: if true, push tftSprite to LCD.
+    */
+    virtual bool setup();
+
+    /**
+     * Looping interface
+     * Return: if true, push tftSprite to LCD.
+     */
+    virtual bool loop();
     virtual void finish();
     virtual void pressA();
     virtual void pressB();

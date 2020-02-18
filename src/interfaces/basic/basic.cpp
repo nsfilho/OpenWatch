@@ -5,14 +5,15 @@
 
 int myFont = 1;
 
-void BasicInterface::setup()
+bool BasicInterface::setup()
 {
     M5.Lcd.setRotation(SCREEN_ROTATION);
     tftSprite.setRotation(SCREEN_ROTATION);
     tftSprite.fillScreen(BLACK);
+    return false;
 }
 
-void BasicInterface::loop()
+bool BasicInterface::loop()
 {
     tftSprite.fillSprite(BLACK);
     tftSprite.setTextSize(1);
@@ -30,5 +31,5 @@ void BasicInterface::loop()
     barWidth = ((M5.Axp.GetBatVoltage() - MIN_VOLTAGE) / (MAX_VOLTAGE - MIN_VOLTAGE)) * 160;
     tftSprite.fillRect(0, 0, barWidth, 3, GREEN);
 
-    tftSprite.pushSprite(0, 0);
+    return true;
 }

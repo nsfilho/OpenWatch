@@ -23,8 +23,8 @@ void NTPUtils::update()
     NTPClient client = NTPClient(ntpUDP, server, config.getNTPOffset());
     if (client.forceUpdate())
     {
-        Serial.print("NTP result: ");
-        Serial.println(client.getFormattedDate());
+        // Serial.print("NTP result: ");
+        // Serial.println(client.getFormattedDate());
         setRTC_fromNTP(client.getFormattedDate());
     }
     free(server);

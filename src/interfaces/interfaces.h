@@ -14,9 +14,9 @@ public:
     Interfaces();
     void begin();
     void addInterface(WatchInterface *interface);
-    void setupInterface();
+    bool setupInterface();
     void finishInterface();
-    void loopInterface();
+    bool loopInterface();
     void pressA();
     void pressB();
 };

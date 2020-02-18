@@ -55,11 +55,14 @@ void Config::setWatchInterface(byte value)
 {
     if (screen_watchInterface != value)
     {
+        bool updateSprite = false;
         _config_changed = 1;
         interfaces.finishInterface();
         screen_watchInterface = value;
-        interfaces.setupInterface();
-        interfaces.loopInterface();
+        updateSprite = interfaces.setupInterface() || updateSprite;
+        updateSprite = interfaces.loopInterface() || updateSprite;
+        if (updateSprite)
+            tftSprite.pushSprite(0, 0);
     }
 }
 

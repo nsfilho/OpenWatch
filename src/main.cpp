@@ -25,7 +25,6 @@ unsigned long lastRefresh = 0; // Control last watchInterface refresh
 void setup(void)
 {
     M5.begin(true, true, true);
-    WiFi.disconnect(true);
     M5.Lcd.fillScreen(BLACK);
     tftSprite.setColorDepth(16);
     tftSprite.createSprite(160, 80);
@@ -36,6 +35,7 @@ void setup(void)
     interfaces.setupInterface();
     wakeupTime = millis();
     lastRefresh = millis();
+    WiFi.disconnect(true);
 #ifdef DEBUG_WATCH
     Serial.println("End of setup");
 #endif
@@ -43,6 +43,7 @@ void setup(void)
 
 void loop(void)
 {
+    bool updateSprite = false;
     M5.update();
 
     /** Button A: Key pressed */
@@ -65,17 +66,21 @@ void loop(void)
         interfaces.pressB();
     }
 
-    update_watch_interface();
+    updateSprite = update_watch_interface() || updateSprite;
+    updateSprite = network.loop() || updateSprite;
     check_wakeup_timeout();
     ntpUtils.loop();
-    network.loop();
+
+    if (updateSprite)
+        tftSprite.pushSprite(0, 0);
 }
 
 /**
  * Routine to update the watch screen interface (time)
  */
-void update_watch_interface(void)
+bool update_watch_interface(void)
 {
+    bool result = false;
     if (millis() - lastRefresh > config.screen_refreshTime)
     {
 #ifdef DEBUG_WATCH
@@ -86,9 +91,10 @@ void update_watch_interface(void)
         Serial.println(interfaces.totalInterfaces - 1);
 #endif
         getRTC_info();
-        interfaces.loopInterface();
+        result = interfaces.loopInterface();
         lastRefresh = millis();
     }
+    return result;
 }
 
 /**

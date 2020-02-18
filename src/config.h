@@ -16,7 +16,7 @@
 
 /** Definitions for Battery Measure */
 #define MAX_VOLTAGE 4.1
-#define MIN_VOLTAGE 3.7
+#define MIN_VOLTAGE 3.6
 
 /** Network definitions */
 #define NETWORK_CONNECTION_TIMEOUT 5000

@@ -14,8 +14,8 @@ private:
     ntpInterface_status_t _status;
 
 public:
-    void setup();
-    void loop();
+    bool setup();
+    bool loop();
     void pressB();
     void finish();
     void startUpdate();

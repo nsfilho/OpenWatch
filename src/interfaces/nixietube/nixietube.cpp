@@ -17,28 +17,29 @@ const uint8_t *m[] = { // vfd font 35x67
     vfd_35x67_0, vfd_35x67_1, vfd_35x67_2, vfd_35x67_3, vfd_35x67_4,
     vfd_35x67_5, vfd_35x67_6, vfd_35x67_7, vfd_35x67_8, vfd_35x67_9};
 
-void nixietube_setup()
+bool nixietube_setup()
 {
     M5.Lcd.setRotation(SCREEN_ROTATION);
     M5.Lcd.fillScreen(BLACK);
+    return false;
 }
 
-void NixieTube1::setup()
+bool NixieTube1::setup()
 {
-    nixietube_setup();
+    return nixietube_setup();
 }
 
-void NixieTube2::setup()
+bool NixieTube2::setup()
 {
-    nixietube_setup();
+    return nixietube_setup();
 }
 
-void NixieTube3::setup()
+bool NixieTube3::setup()
 {
-    nixietube_setup();
+    return nixietube_setup();
 }
 
-void NixieTube1::loop()
+bool NixieTube1::loop()
 {
     int y1 = int(RTC_DateStruct.Year / 1000);
     int y2 = int((RTC_DateStruct.Year - y1 * 1000) / 100);
@@ -78,9 +79,10 @@ void NixieTube1::loop()
     M5.Lcd.drawPixel(108, 64, ORANGE);
     M5.Lcd.pushImage(120, 40, 18, 34, (uint16_t *)n[s1]);
     M5.Lcd.pushImage(140, 40, 18, 34, (uint16_t *)n[s2]);
+    return false;
 }
 
-void NixieTube2::loop()
+bool NixieTube2::loop()
 {
     int h1 = int(RTC_TimeStruct.Hours / 10);
     int h2 = int(RTC_TimeStruct.Hours - h1 * 10);
@@ -98,9 +100,10 @@ void NixieTube2::loop()
     M5.Lcd.pushImage(121, 0, 35, 67, (uint16_t *)m[i2]);
     M5.Lcd.pushImage(120, 45, 18, 34, (uint16_t *)n[s1]);
     M5.Lcd.pushImage(140, 45, 18, 34, (uint16_t *)n[s2]);
+    return false;
 }
 
-void NixieTube3::loop()
+bool NixieTube3::loop()
 {
     int i1 = int(RTC_TimeStruct.Minutes / 10);
     int i2 = int(RTC_TimeStruct.Minutes - i1 * 10);
@@ -115,4 +118,5 @@ void NixieTube3::loop()
     M5.Lcd.drawPixel(79, 53, YELLOW);
     M5.Lcd.pushImage(83, 6, 35, 67, (uint16_t *)m[s1]);
     M5.Lcd.pushImage(121, 6, 35, 67, (uint16_t *)m[s2]);
+    return false;
 }

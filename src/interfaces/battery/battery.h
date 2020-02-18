@@ -6,8 +6,8 @@
 class BatteryInterface : public WatchInterface
 {
 public:
-    void setup();
-    void loop();
+    bool setup();
+    bool loop();
     void finish();
 };
 

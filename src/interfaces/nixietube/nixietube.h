@@ -5,24 +5,24 @@
 class NixieTube1 : public WatchInterface
 {
 public:
-    void setup();
-    void loop();
+    bool setup();
+    bool loop();
 };
 
 class NixieTube2 : public WatchInterface
 {
 public:
-    void setup();
-    void loop();
+    bool setup();
+    bool loop();
 };
 
 class NixieTube3 : public WatchInterface
 {
 public:
-    void setup();
-    void loop();
+    bool setup();
+    bool loop();
 };
 
-void nixietube_setup();
+bool nixietube_setup();
 
 #endif

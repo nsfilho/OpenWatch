@@ -1,0 +1,46 @@
+{
+    "coord": {
+        "lon": -49.06,
+        "lat": -22.31
+    },
+    "weather": [
+        {
+            "id": 500,
+            "main": "Rain",
+            "description": "light rain",
+            "icon": "10n"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 26.26,
+        "feels_like": 29.1,
+        "temp_min": 24.44,
+        "temp_max": 28,
+        "pressure": 1015,
+        "humidity": 74
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 2.1,
+        "deg": 90
+    },
+    "rain": {
+        "3h": 0.31
+    },
+    "clouds": {
+        "all": 100
+    },
+    "dt": 1581990628,
+    "sys": {
+        "type": 1,
+        "id": 8341,
+        "country": "BR",
+        "sunrise": 1581930391,
+        "sunset": 1581976460
+    },
+    "timezone": -10800,
+    "id": 3470279,
+    "name": "Bauru",
+    "cod": 200
+}

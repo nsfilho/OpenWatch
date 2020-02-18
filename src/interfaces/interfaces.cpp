@@ -4,13 +4,15 @@
 #include "battery/battery.h"
 #include "basic/basic.h"
 #include "ntp/ntpInterface.h"
+#include "weather/weather.h"
 
 NixieTube1 i1 = NixieTube1();
-NixieTube2 i2 = NixieTube2();
-NixieTube3 i3 = NixieTube3();
+// NixieTube2 i2 = NixieTube2();
+// NixieTube3 i3 = NixieTube3();
 BatteryInterface i4 = BatteryInterface();
 BasicInterface i5 = BasicInterface();
 NtpInterface i6 = NtpInterface();
+WeatherInterface i7 = WeatherInterface();
 
 Interfaces::Interfaces()
 {
@@ -20,12 +22,13 @@ Interfaces::Interfaces()
 void Interfaces::begin()
 {
     addInterface(&i1);
-    addInterface(&i2);
-    addInterface(&i3);
+    // addInterface(&i2);
+    // addInterface(&i3);
     addInterface(&i4);
     addInterface(&i5);
     addInterface(&i6);
-    Serial.println("Interfaces: loaded!");
+    addInterface(&i7);
+    // Serial.println("Interfaces: loaded!");
 }
 
 void Interfaces::addInterface(WatchInterface *interface)
@@ -34,9 +37,9 @@ void Interfaces::addInterface(WatchInterface *interface)
     totalInterfaces++;
 }
 
-void Interfaces::setupInterface()
+bool Interfaces::setupInterface()
 {
-    interfaces[config.screen_watchInterface]->setup();
+    return interfaces[config.screen_watchInterface]->setup();
 }
 
 void Interfaces::finishInterface()
@@ -44,9 +47,9 @@ void Interfaces::finishInterface()
     interfaces[config.screen_watchInterface]->finish();
 }
 
-void Interfaces::loopInterface()
+bool Interfaces::loopInterface()
 {
-    interfaces[config.screen_watchInterface]->loop();
+    return interfaces[config.screen_watchInterface]->loop();
 }
 
 void Interfaces::pressA()

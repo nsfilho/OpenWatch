@@ -5,15 +5,20 @@
 #include "watch_interface.h"
 #include "main.h"
 
-void WatchInterface::setup()
+bool WatchInterface::setup()
 {
     M5.Lcd.setRotation(SCREEN_ROTATION);
     tftSprite.setRotation(SCREEN_ROTATION);
+    return false;
 }
 
-void WatchInterface::loop()
+/**
+ * Return true if your code buffer all display info in Sprite.
+ */
+bool WatchInterface::loop()
 {
     // do nothing
+    return false;
 }
 
 void WatchInterface::finish()
