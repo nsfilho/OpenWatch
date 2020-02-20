@@ -9,6 +9,7 @@ bool WatchInterface::setup()
 {
     M5.Lcd.setRotation(SCREEN_ROTATION);
     tftSprite.setRotation(SCREEN_ROTATION);
+    displayNetworkStatus = true;
     return false;
 }
 

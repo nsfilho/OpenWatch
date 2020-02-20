@@ -4,6 +4,8 @@
 class WatchInterface
 {
 public:
+    bool displayNetworkStatus;
+
     /** 
      * Setup a watch interface
      * Return: if true, push tftSprite to LCD.

@@ -61,3 +61,8 @@ void Interfaces::pressB()
 {
     interfaces[config.screen_watchInterface]->pressB();
 }
+
+WatchInterface *Interfaces::getCurrent()
+{
+    return interfaces[config.screen_watchInterface];
+}

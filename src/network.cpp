@@ -31,11 +31,11 @@ watch_network_status_t Network::status()
 /**
  * Async routines
  */
-bool Network::loop()
+bool Network::loop(bool displayCurrentStatus)
 {
     if (_status == WN_SCANNING && WiFi.scanComplete() >= 0)
         checkKnowsNetwork();
-    if (_status != WN_OFF)
+    if (_status != WN_OFF && displayCurrentStatus)
     {
         displayStatus();
         return true;
@@ -52,22 +52,22 @@ void Network::displayStatus()
             displayStarted = millis();
             _lastStatus = _status;
         }
-        tftSprite.fillRect(20, 20, 120, 40, BLACK);
-        tftSprite.drawRect(20, 20, 120, 40, WHITE);
-        tftSprite.drawBitmap(25, 25, wifi_logo, 40, 30, WHITE);
-        tftSprite.setCursor(70, 25, 1);
+        tftSprite.fillRect(18, 20, 122, 40, BLACK);
+        tftSprite.drawRect(18, 20, 122, 40, WHITE);
+        tftSprite.drawBitmap(23, 25, wifi_logo, 40, 30, WHITE);
+        tftSprite.setCursor(68, 25, 1);
         tftSprite.setTextColor(WHITE);
         tftSprite.setTextSize(1);
         switch (_status)
         {
         case WN_CONNECTING:
             tftSprite.print("Connecting");
-            tftSprite.setCursor(70, 40);
+            tftSprite.setCursor(68, 40);
             tftSprite.print(WiFi.SSID().c_str());
             break;
         case WN_CONNECTED:
             tftSprite.print("Connected");
-            tftSprite.setCursor(70, 40);
+            tftSprite.setCursor(68, 40);
             tftSprite.print(WiFi.SSID().c_str());
             break;
         case WN_FAILED:

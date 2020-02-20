@@ -8,10 +8,9 @@ bool started;
 
 bool NtpInterface::setup()
 {
+    WatchInterface::setup();
     started = false;
     config.noSleep = true;
-    M5.Lcd.setRotation(SCREEN_ROTATION);
-    tftSprite.setRotation(SCREEN_ROTATION);
     msgDisplay1 = "Press B: Start";
     return false;
 }

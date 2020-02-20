@@ -63,3 +63,16 @@ void setRTC_fromCompiler()
     TimeStruct.Seconds = (pt.substring(18, 20)).toInt();
     M5.Rtc.SetTime(&TimeStruct);
 }
+
+byte months[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+// count from year 2010
+long getRTC_EllapsedTime(RTC_DateTypeDef *date, RTC_TimeTypeDef *time)
+{
+    return time->Seconds +
+           time->Minutes * 60 +
+           time->Hours * 3600 +
+           date->Date * 86400 +
+           months[date->Month] * 86400 +
+           (date->Year - 2010) * 365 * 86400;
+}

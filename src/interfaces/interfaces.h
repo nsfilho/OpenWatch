@@ -7,7 +7,7 @@
 class Interfaces
 {
 private:
-    WatchInterface *interfaces[10];
+    WatchInterface *interfaces[MAX_INTERFACES];
 
 public:
     byte totalInterfaces;
@@ -19,6 +19,7 @@ public:
     bool loopInterface();
     void pressA();
     void pressB();
+    WatchInterface *getCurrent();
 };
 
 #endif

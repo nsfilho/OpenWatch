@@ -24,7 +24,7 @@ public:
     Network();
     void begin();
     bool isConnect();
-    bool loop();
+    bool loop(bool displayCurrentStatus = true);
     void end();
     watch_network_status_t status();
 };

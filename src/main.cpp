@@ -65,14 +65,12 @@ void loop(void)
         wakeupTime = millis();
         interfaces.pressB();
     }
-
     updateSprite = update_watch_interface() || updateSprite;
-    updateSprite = network.loop() || updateSprite;
-    check_wakeup_timeout();
+    updateSprite = network.loop(interfaces.getCurrent()->displayNetworkStatus) || updateSprite;
     ntpUtils.loop();
-
     if (updateSprite)
         tftSprite.pushSprite(0, 0);
+    check_wakeup_timeout();
 }
 
 /**

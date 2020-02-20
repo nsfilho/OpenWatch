@@ -7,8 +7,7 @@ int myFont = 1;
 
 bool BasicInterface::setup()
 {
-    M5.Lcd.setRotation(SCREEN_ROTATION);
-    tftSprite.setRotation(SCREEN_ROTATION);
+    WatchInterface::setup();
     tftSprite.fillScreen(BLACK);
     return false;
 }

@@ -3,11 +3,8 @@
  */
 #include <M5StickC.h>
 #include <SPIFFS.h>
-#include <ArduinoJson.h>
 #include "main.h"
 #include "interfaces/interfaces.h"
-
-StaticJsonDocument<512> doc;
 
 /**
  * Create a new instance of Config Class
@@ -31,6 +28,7 @@ void Config::begin()
     _config_changed = 0;
 #ifdef DEBUG_WATCH
     Serial.println("Config: Loaded!");
+    serializeJsonPretty(jsonConfig, Serial);
 #endif
 }
 
@@ -94,16 +92,16 @@ void Config::load()
         return;
     }
     fs::File config = SPIFFS.open("/config.json");
-    DeserializationError error = deserializeJson(doc, config);
+    DeserializationError error = deserializeJson(jsonConfig, config);
     if (error)
         Serial.println(F("Failed to read file!"));
 
     // Save for quick access the most used configurations.
-    screen_watchInterface = doc["screen"]["watchInterface"] | 0;
-    screen_refreshTime = doc["screen"]["refreshTime"] | REFRESH_TIME;
-    screen_brightness = doc["screen"]["brightness"] | SCREEN_BRIGHTNESS;
-    screen_wakeup_timeout = doc["screen"]["wakeupTimeout"] | SCREEN_WAKEUP_TIMEOUT;
-    network_connection_timeout = doc["network"]["connectionTimeout"] | NETWORK_CONNECTION_TIMEOUT;
+    screen_watchInterface = jsonConfig["screen"]["watchInterface"] | 0;
+    screen_refreshTime = jsonConfig["screen"]["refreshTime"] | REFRESH_TIME;
+    screen_brightness = jsonConfig["screen"]["brightness"] | SCREEN_BRIGHTNESS;
+    screen_wakeup_timeout = jsonConfig["screen"]["wakeupTimeout"] | SCREEN_WAKEUP_TIMEOUT;
+    network_connection_timeout = jsonConfig["network"]["connectionTimeout"] | NETWORK_CONNECTION_TIMEOUT;
     config.close();
 }
 
@@ -115,13 +113,13 @@ void Config::save()
     if (_config_changed)
     {
         fs::File config = SPIFFS.open("/config.json", "w");
-        doc["screen"]["watchInterface"] = screen_watchInterface;
-        doc["screen"]["brightness"] = screen_brightness;
-        doc["screen"]["refreshTime"] = screen_refreshTime;
-        doc["screen"]["wakeupTimeout"] = screen_wakeup_timeout;
-        serializeJson(doc, config);
+        jsonConfig["screen"]["watchInterface"] = screen_watchInterface;
+        jsonConfig["screen"]["brightness"] = screen_brightness;
+        jsonConfig["screen"]["refreshTime"] = screen_refreshTime;
+        jsonConfig["screen"]["wakeupTimeout"] = screen_wakeup_timeout;
+        serializeJson(jsonConfig, config);
 #ifdef DEBUG_WATCH
-        serializeJsonPretty(doc, Serial);
+        serializeJsonPretty(jsonConfig, Serial);
 #endif
         config.close();
     }
@@ -132,7 +130,7 @@ void Config::save()
  */
 int Config::existsNetwork(String name)
 {
-    JsonArray wifis = doc["wifi"];
+    JsonArray wifis = jsonConfig["wifi"];
     for (int x = 0; x < wifis.size(); x++)
     {
         JsonVariant wifi_config = wifis.getElement(x);
@@ -157,7 +155,7 @@ int Config::existsNetwork(String name)
  */
 String Config::getNetworkPassword(String name)
 {
-    JsonArray wifis = doc["wifi"];
+    JsonArray wifis = jsonConfig["wifi"];
     int network_index = existsNetwork(name);
     if (network_index > -1)
     {
@@ -172,7 +170,7 @@ String Config::getNetworkPassword(String name)
  */
 String Config::getNTPServer()
 {
-    return doc["ntp"]["server"];
+    return jsonConfig["ntp"]["server"];
 }
 
 /**
@@ -180,5 +178,5 @@ String Config::getNTPServer()
  */
 int Config::getNTPOffset()
 {
-    return doc["ntp"]["offset"];
+    return jsonConfig["ntp"]["offset"];
 }
