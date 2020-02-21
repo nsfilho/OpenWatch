@@ -4,45 +4,50 @@
 #include "weatherImgs.h"
 #include "rtcutils.h"
 
+#define DEBUG_WATCH 1
+
+#define STATUS_INFO_TEMP 0
+#define STATUS_INFO_PLUVIOMETRIC 1
+#define STATUS_INFO_READINFO 2
+#define STATUS_INFO_TIMEOUT 3000
+
 bool updated = false;
+byte cityIndex;
+byte statusInfo = 0;
+long lastStatusInfo = 0;
+JsonArray cities;
 
 bool WeatherInterface::setup()
 {
     WatchInterface::setup();
     displayNetworkStatus = false;
-    tftSprite.fillSprite(BLACK);
+    cityIndex = config.jsonConfig["openWeather"]["index"];
+    cities = config.jsonConfig["openWeather"]["cities"];
+    lastStatusInfo = millis();
     if (needUpdate())
-        network.begin();
+        startUpdate();
     return false;
+}
+
+void WeatherInterface::startUpdate()
+{
+    noSleep = true;
+    updated = false;
+    network.begin();
 }
 
 bool WeatherInterface::needUpdate()
 {
-    byte index = config.jsonConfig["openWeather"]["index"];
-    JsonVariant city = config.jsonConfig["openWeather"]["cities"][index];
+    JsonVariant city = cities[cityIndex];
     const long lastRead = city["lastRead"];
     return getRTC_EllapsedTime(&RTC_DateStruct, &RTC_TimeStruct) - lastRead > 3600;
 }
 
-bool WeatherInterface::loop()
+void WeatherInterface::updateInfo()
 {
-    byte index = config.jsonConfig["openWeather"]["index"];
-    JsonArray cities = config.jsonConfig["openWeather"]["cities"];
-    // tftSprite.setFreeFont(&FreeMono9pt7b);
-    tftSprite.setTextFont(2);
-    tftSprite.setTextSize(1);
-    tftSprite.setCursor(70, 10);
-    if (cities.size() < index)
-    {
-        // the city on index does not exists more.
-        tftSprite.printf("Invalid City");
-        updated = true;
-        return false;
-    }
-
-    JsonVariant city = cities[index];
     if (!updated && network.isConnect())
     {
+        JsonVariant city = cities[cityIndex];
         String appId = config.jsonConfig["openWeather"]["appid"];
         String units = config.jsonConfig["openWeather"]["units"];
         String cityName = city["name"];
@@ -52,8 +57,13 @@ bool WeatherInterface::loop()
         const int httpCode = http.GET();
         if (httpCode == 200)
         {
-            StaticJsonDocument<512> weatherInfo;
-            deserializeJson(weatherInfo, http.getString());
+            DynamicJsonDocument weatherInfo(512);
+            const String jsonAnswer = http.getString();
+#ifdef DEBUG_WATCH
+            Serial.println("JSON Answer:");
+            Serial.println(jsonAnswer);
+#endif
+            deserializeJson(weatherInfo, jsonAnswer);
             city["temp"] = weatherInfo["main"]["temp"];
             city["temp_min"] = weatherInfo["main"]["temp_min"];
             city["temp_max"] = weatherInfo["main"]["temp_max"];
@@ -61,30 +71,135 @@ bool WeatherInterface::loop()
             city["humidity"] = weatherInfo["main"]["humidity"];
             city["status"] = weatherInfo["weather"][0]["description"];
             city["lastRead"] = getRTC_EllapsedTime(&RTC_DateStruct, &RTC_TimeStruct);
+            city["rain3h"] = weatherInfo["rain"]["3h"];
             Serial.println("Updated weather info");
             config.save();
         }
         http.end();
         network.end();
         updated = true;
+        noSleep = false;
     }
+}
+
+bool WeatherInterface::loop()
+{
+    tftSprite.fillSprite(BLACK);
+    WatchInterface::loop();
+    updateInfo();
+    tftSprite.setTextFont(2);
+    tftSprite.setTextSize(1);
+    tftSprite.setCursor(70, 10);
+
+    // test if it is a valid city on cityIndex
+    if (cities.size() < cityIndex)
+    {
+        tftSprite.printf("Invalid City");
+        updated = true;
+        return false;
+    }
+
+    // Basic Infos and Image to display
+    JsonVariant city = cities[cityIndex];
     const String cityName = city["name"];
-    const String status = city["status"];
-    const float temp = city["temp_min"];
+    String status = city["status"];
+    const bool clouds = status.indexOf("cloud") >= 0;
+    const bool rain = status.indexOf("rain") >= 0;
+
+    tftSprite.print(cityName);
+    if (RTC_TimeStruct.Hours > 5 && RTC_TimeStruct.Hours < 13)
+    {
+        // durante o dia
+        if (clouds)
+        {
+            tftSprite.pushImage(10, 10, 50, 50, weather4);
+        }
+        else if (rain)
+        {
+            tftSprite.pushImage(10, 10, 50, 50, weather5);
+        }
+        else
+            tftSprite.pushImage(10, 10, 50, 50, weather1);
+    }
+    else if (RTC_TimeStruct.Hours < 18)
+    {
+        // Durante a tarde
+        if (clouds)
+        {
+            tftSprite.pushImage(10, 10, 50, 50, weather4);
+        }
+        else if (rain)
+        {
+            tftSprite.pushImage(10, 10, 50, 50, weather5);
+        }
+        else
+            tftSprite.pushImage(10, 10, 50, 50, weather2);
+    }
+    else
+    {
+        // Durante a noite
+        if (clouds)
+        {
+            tftSprite.pushImage(10, 10, 50, 50, weather4);
+        }
+        else if (rain)
+        {
+            tftSprite.pushImage(10, 10, 50, 50, weather6);
+        }
+        else
+            tftSprite.pushImage(10, 10, 50, 50, weather3);
+    }
+
+    // Control info to display
+    const float temp = city["temp"];
     const float temp_max = city["temp_max"];
     const float temp_min = city["temp_min"];
-    // tftSprite.setFreeFont(&FreeMonoBold9pt7b);
-    tftSprite.print(cityName);
-    // tftSprite.setFreeFont(&FreeMono9pt7b);
-    // tftSprite.setTextSize(1);
-    tftSprite.setCursor(70, 25);
-    tftSprite.print(status);
-    tftSprite.setCursor(70, 45);
-    tftSprite.printf("Temp: %3.1f", temp);
-    tftSprite.setCursor(10, 63);
-    tftSprite.printf("Min: %3.1f | Max: %3.1f", temp_min, temp_max);
-    tftSprite.pushImage(10, 10, 50, 50, weather_partial);
+    const byte humidity = city["humidity"];
+    const unsigned int pressure = city["pressure"];
+    const float rain3h = city["rain3h"];
+    tftSprite.setCursor(70, 27);
+
+    // Trata os nomes longos
+    if (status.equals("overcast clouds"))
+        status = "clouds";
+
+    switch (statusInfo)
+    {
+    case STATUS_INFO_TEMP:
+        tftSprite.print(status);
+        tftSprite.setCursor(70, 45);
+        tftSprite.printf("Temp: %3.1f", temp);
+        tftSprite.setCursor(10, 63);
+        tftSprite.printf("Min: %3.1f | Max: %3.1f", temp_min, temp_max);
+        break;
+    case STATUS_INFO_PLUVIOMETRIC:
+        tftSprite.printf("Humidity: %d", humidity);
+        tftSprite.setCursor(70, 45);
+        tftSprite.printf("Atmosf: %d", pressure);
+        if (rain3h > 0)
+        {
+            tftSprite.setCursor(10, 63);
+            tftSprite.printf("Chance Rain: %3.2f", rain3h * 100.0);
+        }
+        break;
+    }
+
+    // check info to display
+    if (millis() - lastStatusInfo > STATUS_INFO_TIMEOUT)
+    {
+        statusInfo++;
+        if (statusInfo > 1)
+            statusInfo = 0;
+        lastStatusInfo = millis();
+    }
+
     return true;
+}
+
+void WeatherInterface::pressB()
+{
+    updated = false;
+    network.begin();
 }
 
 void WeatherInterface::finish()

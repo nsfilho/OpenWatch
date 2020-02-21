@@ -10,6 +10,9 @@ public:
     bool loop();
     bool needUpdate();
     void finish();
+    void updateInfo();
+    void pressB();
+    void startUpdate();
 };
 
 #endif

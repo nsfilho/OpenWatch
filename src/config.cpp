@@ -16,7 +16,6 @@ Config::Config()
     screen_wakeup_timeout = SCREEN_WAKEUP_TIMEOUT;
     screen_refreshTime = REFRESH_TIME;
     network_connection_timeout = NETWORK_CONNECTION_TIMEOUT;
-    noSleep = false;
 }
 
 /**

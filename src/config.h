@@ -33,7 +33,6 @@ public:
     StaticJsonDocument<2048> jsonConfig;
     byte screen_brightness;
     byte screen_watchInterface;
-    bool noSleep;
     unsigned int network_connection_timeout;
     unsigned int screen_refreshTime;
     unsigned long screen_wakeup_timeout;

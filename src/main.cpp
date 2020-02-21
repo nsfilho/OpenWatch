@@ -25,7 +25,6 @@ unsigned long lastRefresh = 0; // Control last watchInterface refresh
 void setup(void)
 {
     M5.begin(true, true, true);
-    M5.Lcd.fillScreen(BLACK);
     tftSprite.setColorDepth(16);
     tftSprite.createSprite(160, 80);
     // setRTC_fromCompiler();
@@ -100,7 +99,7 @@ bool update_watch_interface(void)
  */
 void check_wakeup_timeout(void)
 {
-    if (config.noSleep)
+    if (interfaces.getCurrent()->noSleep)
         return;
 
     if (millis() - wakeupTime > config.screen_wakeup_timeout)
@@ -109,7 +108,6 @@ void check_wakeup_timeout(void)
         Serial.println("Entering in Deep Sleep!");
 #endif
         config.save();
-        wakeupTime = millis();
         M5.Axp.DeepSleep();
     }
 }

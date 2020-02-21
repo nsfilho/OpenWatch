@@ -6,6 +6,7 @@
 bool BatteryInterface::setup()
 {
     WatchInterface::setup();
+    screenPos = POSITION_BAR_LEFT;
     M5.Axp.EnableCoulombcounter();
     return false;
 }
@@ -17,15 +18,12 @@ void BatteryInterface::finish()
 
 bool BatteryInterface::loop()
 {
-    String tipo = "Battery";
-    float voltage, current;
-    byte batteryLvl = ((M5.Axp.GetBatVoltage() - MIN_VOLTAGE) / (MAX_VOLTAGE - MIN_VOLTAGE)) * 100;
-
     tftSprite.fillSprite(WHITE);
-    tftSprite.setTextColor(BLACK);
-    //tftSprite.setTextSize(1);
-    //tftSprite.setCursor(0, 0, 2);
-    //tftSprite.printf("AXP Temp: %.1fC \r\n", M5.Axp.GetTempInAXP192());
+    WatchInterface::loop();
+
+    float voltage, current;
+    String tipo = "Battery";
+    byte batteryLvl = ((M5.Axp.GetBatVoltage() - MIN_VOLTAGE) / (MAX_VOLTAGE - MIN_VOLTAGE)) * 100;
     if (M5.Axp.GetVBusVoltage() > 4)
     {
         // USB Connected
@@ -46,16 +44,15 @@ bool BatteryInterface::loop()
         voltage = M5.Axp.GetBatVoltage();
         current = M5.Axp.GetBatCurrent();
     }
-    tftSprite.setCursor(10, 10, 2);
+    tftSprite.setTextColor(BLACK);
+    tftSprite.setCursor(13, 10, 2);
     tftSprite.setTextSize(2);
     tftSprite.print(tipo);
     tftSprite.setTextSize(1);
-    tftSprite.setCursor(10, 45);
+    tftSprite.setCursor(13, 45);
     tftSprite.printf("V: %.3fv", voltage);
-    tftSprite.setCursor(10, 60);
+    tftSprite.setCursor(13, 60);
     tftSprite.printf("I: %.3fma\r\n", current);
-    //tftSprite.printf("Bat power %.3fmw", M5.Axp.GetBatPower());
-
     if (batteryLvl > 80)
         tftSprite.pushImage(120, 0, 40, 80, batteryStatus6);
     else if (batteryLvl > 60)
