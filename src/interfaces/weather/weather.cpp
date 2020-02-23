@@ -6,21 +6,20 @@
 
 #define DEBUG_WATCH 1
 
-#define STATUS_INFO_TEMP 0
-#define STATUS_INFO_PLUVIOMETRIC 1
-#define STATUS_INFO_READINFO 2
-#define STATUS_INFO_TIMEOUT 3000
-
 bool updated = false;
 byte cityIndex;
 byte statusInfo = 0;
 long lastStatusInfo = 0;
 JsonArray cities;
 
+WeatherInterface::WeatherInterface()
+{
+    networkStatus = NETWORK_STATUS_NONE;
+}
+
 bool WeatherInterface::setup()
 {
     WatchInterface::setup();
-    displayNetworkStatus = false;
     cityIndex = config.jsonConfig["openWeather"]["index"];
     cities = config.jsonConfig["openWeather"]["cities"];
     lastStatusInfo = millis();
@@ -84,6 +83,7 @@ void WeatherInterface::updateInfo()
 
 bool WeatherInterface::loop()
 {
+    WatchInterface::loop();
     tftSprite.fillSprite(BLACK);
     WatchInterface::loop();
     updateInfo();
@@ -200,9 +200,4 @@ void WeatherInterface::pressB()
 {
     updated = false;
     network.begin();
-}
-
-void WeatherInterface::finish()
-{
-    network.end();
 }

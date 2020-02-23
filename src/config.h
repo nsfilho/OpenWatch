@@ -1,6 +1,5 @@
 #ifndef __CONFIG_H_
 #define __CONFIG_H_
-#include <M5StickC.h>
 #include <ArduinoJson.h>
 
 /** Screen default rotation */
@@ -17,7 +16,7 @@
 
 /** Definitions for Battery Measure */
 #define MAX_VOLTAGE 4.1
-#define MIN_VOLTAGE 3.55
+#define MIN_VOLTAGE 3.50
 
 /** Network definitions */
 #define NETWORK_CONNECTION_TIMEOUT 5000

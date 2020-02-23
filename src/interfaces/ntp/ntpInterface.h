@@ -14,6 +14,7 @@ private:
     ntpInterface_status_t _status;
 
 public:
+    NtpInterface();
     bool setup();
     bool loop();
     void pressB();

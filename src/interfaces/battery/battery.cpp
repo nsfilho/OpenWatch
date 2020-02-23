@@ -1,29 +1,32 @@
-#include <M5StickC.h>
 #include "main.h"
 #include "battery.h"
 #include "batteryImgs.h"
 
+BatteryInterface::BatteryInterface()
+{
+    screenPos = POSITION_BAR_LEFT;
+}
+
 bool BatteryInterface::setup()
 {
-    WatchInterface::setup();
-    screenPos = POSITION_BAR_LEFT;
+    WatchInterface::setup(WHITE);
     M5.Axp.EnableCoulombcounter();
     return false;
 }
 
 void BatteryInterface::finish()
 {
+    WatchInterface::finish();
     M5.Axp.DisableCoulombcounter();
 }
 
 bool BatteryInterface::loop()
 {
-    tftSprite.fillSprite(WHITE);
     WatchInterface::loop();
-
+    tftSprite.fillSprite(WHITE);
     float voltage, current;
     String tipo = "Battery";
-    byte batteryLvl = ((M5.Axp.GetBatVoltage() - MIN_VOLTAGE) / (MAX_VOLTAGE - MIN_VOLTAGE)) * 100;
+    byte batteryLvl = BATTERY_LVL;
     if (M5.Axp.GetVBusVoltage() > 4)
     {
         // USB Connected

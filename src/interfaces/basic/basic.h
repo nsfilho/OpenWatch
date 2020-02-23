@@ -6,7 +6,7 @@
 class BasicInterface : public WatchInterface
 {
 public:
-    bool setup();
+    BasicInterface();
     bool loop();
 };
 

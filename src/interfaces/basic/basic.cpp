@@ -1,22 +1,17 @@
-#include <M5StickC.h>
 #include "main.h"
 #include "basic.h"
 #include "rtcutils.h"
 
-int myFont = 1;
-
-bool BasicInterface::setup()
+BasicInterface::BasicInterface()
 {
-    WatchInterface::setup();
     batteryPos = POSITION_BAR_BOTTOM;
     screenPos = POSITION_BAR_TOP;
-    return false;
 }
 
 bool BasicInterface::loop()
 {
-    tftSprite.fillSprite(BLACK);
     WatchInterface::loop();
+    tftSprite.fillSprite(BLACK);
     tftSprite.setTextSize(1);
     tftSprite.setTextColor(WHITE);
     tftSprite.setCursor(10, 15, 4);

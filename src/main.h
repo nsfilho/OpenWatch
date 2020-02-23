@@ -14,6 +14,7 @@ extern Network network;
 extern unsigned long wakeupTime;
 
 void setup(void);
+void initScreen(void);
 void loop(void);
 bool update_watch_interface(void);
 void check_wakeup_timeout(void);

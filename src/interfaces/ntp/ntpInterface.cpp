@@ -1,24 +1,27 @@
-#include <M5StickC.h>
 #include "main.h"
 #include "ntpInterface.h"
 #include "icons.h"
 
 String msgDisplay1;
-bool started;
+bool started = false;
+
+NtpInterface::NtpInterface()
+{
+    screenPos = POSITION_BAR_BOTTOM;
+}
 
 bool NtpInterface::setup()
 {
     WatchInterface::setup();
-    screenPos = POSITION_BAR_BOTTOM;
-    started = false;
     msgDisplay1 = "Press B: Start";
+    started = false;
     return false;
 }
 
 bool NtpInterface::loop()
 {
-    tftSprite.fillSprite(BLACK);
     WatchInterface::loop();
+    tftSprite.fillSprite(BLACK);
     tftSprite.fillRect(0, 0, 160, 23, ORANGE);
     tftSprite.drawBitmap(1, 1, icon_gears, 20, 20, WHITE);
     tftSprite.setTextColor(WHITE, ORANGE);
@@ -30,10 +33,7 @@ bool NtpInterface::loop()
     tftSprite.printf(msgDisplay1.c_str());
     // Check if connection is ready to start update
     if (started && network.isConnect())
-    {
-        started = false;
         startUpdate();
-    }
     return true;
 }
 
@@ -47,7 +47,9 @@ void NtpInterface::startUpdate()
     msgDisplay1 = "Updated!";
     loop();
     network.end();
+    wakeupTime = millis();
     noSleep = false;
+    started = false;
 }
 
 void NtpInterface::pressB()

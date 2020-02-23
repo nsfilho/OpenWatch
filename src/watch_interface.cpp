@@ -1,21 +1,20 @@
 /**
  * This file define a base structure for a watch interface
  */
-#include <M5StickC.h>
-#include "watch_interface.h"
+#include <WiFi.h>
 #include "main.h"
-
-#define SCREEN_BAR_WIDTH(X) (((millis() - wakeupTime) * X) / config.screen_wakeup_timeout)
-#define BATTERY_BAR_WIDTH(X) (((M5.Axp.GetBatVoltage() - MIN_VOLTAGE) * X) / (MAX_VOLTAGE - MIN_VOLTAGE))
+#include "watch_interface.h"
 
 bool WatchInterface::setup()
 {
+    return setup(BLACK);
+}
+
+bool WatchInterface::setup(uint32_t color)
+{
     M5.Lcd.setRotation(SCREEN_ROTATION);
     tftSprite.setRotation(SCREEN_ROTATION);
-    displayNetworkStatus = true;
-    noSleep = false;
-    batteryPos = POSITION_BAR_OFF;
-    screenPos = POSITION_BAR_OFF;
+    tftSprite.fillScreen(color);
     return false;
 }
 
@@ -25,14 +24,23 @@ bool WatchInterface::setup()
 bool WatchInterface::loop()
 {
     // do nothing
-    loopBatteryBar();
-    loopScreenBar();
     return false;
+}
+
+bool WatchInterface::loopStatus()
+{
+    bool updateSprite = loop();
+    updateSprite = loopBatteryBar() || updateSprite;
+    updateSprite = loopScreenBar() || updateSprite;
+    updateSprite = loopNetwork() || updateSprite;
+    return updateSprite;
 }
 
 void WatchInterface::finish()
 {
-    // do nothing
+    // Save energy
+    if (network.status() != WN_OFF)
+        network.end();
 }
 
 void WatchInterface::pressA()
@@ -46,7 +54,7 @@ void WatchInterface::pressB()
     config.nextScreenBrightness();
 }
 
-void WatchInterface::loopBatteryBar()
+bool WatchInterface::loopBatteryBar()
 {
     switch (batteryPos)
     {
@@ -62,10 +70,13 @@ void WatchInterface::loopBatteryBar()
     case POSITION_BAR_RIGHT:
         tftSprite.fillRect(77, 0, 80, BATTERY_BAR_WIDTH(80), GREEN);
         break;
+    default:
+        return false;
     }
+    return true;
 }
 
-void WatchInterface::loopScreenBar()
+bool WatchInterface::loopScreenBar()
 {
     switch (screenPos)
     {
@@ -81,5 +92,76 @@ void WatchInterface::loopScreenBar()
     case POSITION_BAR_RIGHT:
         tftSprite.fillRect(77, 0, 80, SCREEN_BAR_WIDTH(80), RED);
         break;
+    default:
+        return false;
     }
+    return true;
+}
+
+bool WatchInterface::loopNetwork()
+{
+    switch (networkStatus)
+    {
+    case NETWORK_STATUS_SMALL:
+        return loopNetworkSmall();
+        break;
+    case NETWORK_STATUS_DIALOG:
+        return loopNetworkDialog();
+        break;
+    }
+    return false;
+}
+
+bool WatchInterface::loopNetworkDialog()
+{
+    const watch_network_status_t status = network.status();
+    if (status == WN_OFF)
+        return false;
+    if (status == WN_CONNECTING || status == WN_SCANNING || status != lastNetworkStatus ||
+        millis() - lastNetworkStatusTime < NETWORK_STATUS_DIALOG_TIMEOUT)
+    {
+        tftSprite.fillRect(18, 20, 122, 40, BLACK);
+        tftSprite.drawRect(18, 20, 122, 40, WHITE);
+        tftSprite.drawBitmap(23, 25, wifi_logo, 40, 30, WHITE);
+        tftSprite.setCursor(68, 25, 1);
+        tftSprite.setTextColor(WHITE);
+        tftSprite.setTextSize(1);
+        switch (status)
+        {
+        case WN_CONNECTING:
+            tftSprite.print("Connecting");
+            tftSprite.setCursor(68, 40);
+            tftSprite.print(WiFi.SSID().c_str());
+            break;
+        case WN_CONNECTED:
+            tftSprite.print("Connected");
+            tftSprite.setCursor(68, 40);
+            tftSprite.print(WiFi.SSID().c_str());
+            break;
+        case WN_FAILED:
+            tftSprite.print("Failed");
+            break;
+        case WN_NO_AVAILABLE:
+            tftSprite.print("No available");
+            break;
+        case WN_SCANNING:
+            tftSprite.print("Scanning...");
+            break;
+        case WN_OFF:
+            tftSprite.print("Off");
+            break;
+        }
+        if (status != lastNetworkStatus)
+        {
+            lastNetworkStatus = status;
+            lastNetworkStatusTime = millis();
+        }
+        return true;
+    }
+    return false;
+}
+
+bool WatchInterface::loopNetworkSmall()
+{
+    return false;
 }

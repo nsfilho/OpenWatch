@@ -28,7 +28,6 @@ void Interfaces::begin()
     addInterface(&i5);
     addInterface(&i6);
     addInterface(&i7);
-    // Serial.println("Interfaces: loaded!");
 }
 
 void Interfaces::addInterface(WatchInterface *interface)
@@ -49,7 +48,7 @@ void Interfaces::finishInterface()
 
 bool Interfaces::loopInterface()
 {
-    return interfaces[config.screen_watchInterface]->loop();
+    return interfaces[config.screen_watchInterface]->loopStatus();
 }
 
 void Interfaces::pressA()

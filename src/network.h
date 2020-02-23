@@ -14,9 +14,7 @@ typedef enum
 class Network
 {
 private:
-    watch_network_status_t _lastStatus;
     watch_network_status_t _status;
-    unsigned long displayStarted;
     void checkKnowsNetwork();
     void displayStatus();
 
@@ -24,7 +22,7 @@ public:
     Network();
     void begin();
     bool isConnect();
-    bool loop(bool displayCurrentStatus = true);
+    bool loop();
     void end();
     watch_network_status_t status();
 };

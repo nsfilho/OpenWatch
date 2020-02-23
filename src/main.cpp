@@ -1,10 +1,8 @@
 /**
  * Main Framework File
  */
-#undef DEBUG_WATCH
-
 #include <M5StickC.h>
-#include <WiFi.h>
+#include "watch_interface.h"
 #include "main.h"
 #include "rtcutils.h"
 
@@ -25,19 +23,23 @@ unsigned long lastRefresh = 0; // Control last watchInterface refresh
 void setup(void)
 {
     M5.begin(true, true, true);
-    tftSprite.setColorDepth(16);
-    tftSprite.createSprite(160, 80);
+    initScreen();
     // setRTC_fromCompiler();
     config.begin();
     interfaces.begin();
-    M5.Axp.ScreenBreath(config.screen_brightness);
+    network.end();
     interfaces.setupInterface();
+    M5.Axp.ScreenBreath(config.screen_brightness);
     wakeupTime = millis();
     lastRefresh = millis();
-    WiFi.disconnect(true);
-#ifdef DEBUG_WATCH
-    Serial.println("End of setup");
-#endif
+}
+
+void initScreen(void)
+{
+    tftSprite.setColorDepth(16);
+    tftSprite.createSprite(160, 80);
+    tftSprite.fillSprite(BLACK);
+    tftSprite.pushSprite(0, 0);
 }
 
 void loop(void)
@@ -48,9 +50,6 @@ void loop(void)
     /** Button A: Key pressed */
     if (M5.BtnA.wasPressed() != 0)
     {
-#ifdef DEBUG_WATCH
-        Serial.println("ButtonA: Pressed");
-#endif
         wakeupTime = millis();
         interfaces.pressA();
     }
@@ -58,14 +57,11 @@ void loop(void)
     /** Button B: Key pressed */
     if (M5.BtnB.wasPressed() != 0)
     {
-#ifdef DEBUG_WATCH
-        Serial.println("ButtonB: Pressed");
-#endif
         wakeupTime = millis();
         interfaces.pressB();
     }
-    updateSprite = update_watch_interface() || updateSprite;
-    updateSprite = network.loop(interfaces.getCurrent()->displayNetworkStatus) || updateSprite;
+    updateSprite = update_watch_interface();
+    network.loop();
     ntpUtils.loop();
     if (updateSprite)
         tftSprite.pushSprite(0, 0);
@@ -80,13 +76,6 @@ bool update_watch_interface(void)
     bool result = false;
     if (millis() - lastRefresh > config.screen_refreshTime)
     {
-#ifdef DEBUG_WATCH
-        Serial.print(millis());
-        Serial.print(": Refreshing watch interface: ");
-        Serial.print(config.screen_watchInterface);
-        Serial.print(" / ");
-        Serial.println(interfaces.totalInterfaces - 1);
-#endif
         getRTC_info();
         result = interfaces.loopInterface();
         lastRefresh = millis();
@@ -104,9 +93,6 @@ void check_wakeup_timeout(void)
 
     if (millis() - wakeupTime > config.screen_wakeup_timeout)
     {
-#ifdef DEBUG_WATCH
-        Serial.println("Entering in Deep Sleep!");
-#endif
         config.save();
         M5.Axp.DeepSleep();
     }
