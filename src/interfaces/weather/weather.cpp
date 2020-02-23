@@ -14,7 +14,7 @@ JsonArray cities;
 
 WeatherInterface::WeatherInterface()
 {
-    networkStatus = NETWORK_STATUS_NONE;
+    networkStatus = NETWORK_STATUS_SMALL;
 }
 
 bool WeatherInterface::setup()

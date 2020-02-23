@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include "main.h"
 #include "watch_interface.h"
+#include "watch_interface_imgs.h"
 
 bool WatchInterface::setup()
 {
@@ -163,5 +164,9 @@ bool WatchInterface::loopNetworkDialog()
 
 bool WatchInterface::loopNetworkSmall()
 {
-    return false;
+    const watch_network_status_t status = network.status();
+    if (status == WN_OFF)
+        return false;
+    tftSprite.pushImage(134, 1, 25, 12, wifiSmall);
+    return true;
 }
