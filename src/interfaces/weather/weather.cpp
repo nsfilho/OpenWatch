@@ -32,7 +32,7 @@ JsonArray cities;
 
 WeatherInterface::WeatherInterface()
 {
-    networkStatus = NETWORK_STATUS_SMALL;
+    networkStatus = NETWORK_STATUS_SMALL_TOP_RIGHT;
 }
 
 bool WeatherInterface::setup()
@@ -158,7 +158,7 @@ bool WeatherInterface::loop()
         // Durante a noite
         if (clouds)
         {
-            tftSprite.pushImage(10, 10, 50, 50, weather4);
+            tftSprite.pushImage(10, 10, 50, 50, weather8);
         }
         else if (rain)
         {

@@ -57,6 +57,7 @@ bool NtpInterface::loop()
 
 void NtpInterface::startUpdate()
 {
+    started = false;
     msgDisplay1 = "Updating...";
     loop();
     ntpUtils.begin();
@@ -67,7 +68,6 @@ void NtpInterface::startUpdate()
     network.end();
     wakeupTime = millis();
     noSleep = false;
-    started = false;
 }
 
 void NtpInterface::pressB()

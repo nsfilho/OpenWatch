@@ -118,7 +118,13 @@ bool WatchInterface::loopNetwork()
 {
     switch (networkStatus)
     {
-    case NETWORK_STATUS_SMALL:
+    case NETWORK_STATUS_NONE:
+        return false;
+        break;
+    case NETWORK_STATUS_SMALL_TOP_RIGHT:
+    case NETWORK_STATUS_SMALL_TOP_LEFT:
+    case NETWORK_STATUS_SMALL_BOTTOM_RIGHT:
+    case NETWORK_STATUS_SMALL_BOTTOM_LEFT:
         return loopNetworkSmall();
         break;
     case NETWORK_STATUS_DIALOG:
@@ -182,6 +188,12 @@ bool WatchInterface::loopNetworkSmall()
     const watch_network_status_t status = network.status();
     if (status == WN_OFF)
         return false;
-    tftSprite.pushImage(134, 1, 25, 12, wifiSmall);
+    switch (networkStatus) {
+        case NETWORK_STATUS_SMALL_TOP_RIGHT:
+            tftSprite.pushImage(134, 1, 25, 12, wifiSmall);
+            break;
+        default:
+            break;
+    }
     return true;
 }

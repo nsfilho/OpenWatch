@@ -34,12 +34,11 @@
 
 /** Definitions for Battery Measure */
 #define MAX_VOLTAGE 4.1
-#define MIN_VOLTAGE 3.50
+#define MIN_VOLTAGE 3.40
 
 /** Network definitions */
 #define NETWORK_CONNECTION_TIMEOUT 5000
 #define NETWORK_CONNECTION_DELAY 100
-#define NETWORK_STATUS_DISPLAY 2000
 
 class Config
 {
