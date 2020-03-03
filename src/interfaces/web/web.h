@@ -16,26 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>. 
  *
  */
-#ifndef __WEATHER_H_
-#define __WEATHER_H_
+#ifndef __WEB_H_
+#define __WEB_H_
+
 #include "watch_interface.h"
 
-#define STATUS_INFO_TEMP 0
-#define STATUS_INFO_PLUVIOMETRIC 1
-#define STATUS_INFO_READINFO 2
-#define STATUS_INFO_TIMEOUT 3000
-
-class WeatherInterface : public WatchInterface
+class WebInterface : public WatchInterface
 {
+private:
+    String msgToDisplay;
 
 public:
-    WeatherInterface();
+    WebInterface();
     bool setup();
     bool loop();
-    bool needUpdate();
-    void updateInfo();
     void pressB(byte count);
-    void startUpdate();
 };
 
 #endif

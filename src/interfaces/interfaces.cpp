@@ -23,19 +23,16 @@
 #include "basic/basic.h"
 #include "ntp/ntpInterface.h"
 #include "weather/weather.h"
+#include "web/web.h"
 
 NixieTube1 i1 = NixieTube1();
 // NixieTube2 i2 = NixieTube2();
 // NixieTube3 i3 = NixieTube3();
 BatteryInterface i4 = BatteryInterface();
 BasicInterface i5 = BasicInterface();
-NtpInterface i6 = NtpInterface();
-WeatherInterface i7 = WeatherInterface();
-
-Interfaces::Interfaces()
-{
-    totalInterfaces = 0;
-}
+WeatherInterface i6 = WeatherInterface();
+NtpInterface i7 = NtpInterface();
+WebInterface i8 = WebInterface();
 
 void Interfaces::begin()
 {
@@ -46,6 +43,7 @@ void Interfaces::begin()
     addInterface(&i5);
     addInterface(&i6);
     addInterface(&i7);
+    addInterface(&i8);
 }
 
 void Interfaces::addInterface(WatchInterface *interface)
@@ -69,14 +67,19 @@ bool Interfaces::loopInterface()
     return interfaces[config.screen_watchInterface]->loopStatus();
 }
 
-void Interfaces::pressA()
+void Interfaces::pressA(byte count)
 {
-    interfaces[config.screen_watchInterface]->pressA();
+    interfaces[config.screen_watchInterface]->pressA(count);
 }
 
-void Interfaces::pressB()
+void Interfaces::pressB(byte count)
 {
-    interfaces[config.screen_watchInterface]->pressB();
+    interfaces[config.screen_watchInterface]->pressB(count);
+}
+
+void Interfaces::update()
+{
+    interfaces[config.screen_watchInterface]->update();
 }
 
 WatchInterface *Interfaces::getCurrent()

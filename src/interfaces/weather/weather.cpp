@@ -214,7 +214,7 @@ bool WeatherInterface::loop()
     return true;
 }
 
-void WeatherInterface::pressB()
+void WeatherInterface::pressB(byte count)
 {
     updated = false;
     network.begin();

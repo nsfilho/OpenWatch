@@ -28,15 +28,15 @@ private:
     WatchInterface *interfaces[MAX_INTERFACES];
 
 public:
-    byte totalInterfaces;
-    Interfaces();
+    byte totalInterfaces = 0;
     void begin();
     void addInterface(WatchInterface *interface);
     bool setupInterface();
     void finishInterface();
     bool loopInterface();
-    void pressA();
-    void pressB();
+    void update();
+    void pressA(byte count);
+    void pressB(byte count);
     WatchInterface *getCurrent();
 };
 

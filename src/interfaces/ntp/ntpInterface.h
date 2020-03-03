@@ -30,12 +30,14 @@ class NtpInterface : public WatchInterface
 {
 private:
     ntpInterface_status_t _status;
+    bool started = false;
+    String msgToDisplay = "Press B: start";
 
 public:
     NtpInterface();
     bool setup();
     bool loop();
-    void pressB();
+    void pressB(byte count);
     void finish();
     void startUpdate();
 };

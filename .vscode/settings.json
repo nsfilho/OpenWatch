@@ -5,6 +5,8 @@
         "m5display.h": "c",
         "fs.h": "c",
         "memory": "c",
-        "array": "cpp"
+        "array": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp"
     }
 }

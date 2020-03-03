@@ -55,6 +55,13 @@ typedef enum
     PERIOD_EVENING = 2,
 } day_period_t;
 
+typedef enum
+{
+    MOUSE_OFF = 0,
+    MOUSE_DIRECT_MAP = 1,
+    MOUSE_WEIGHT = 2,
+} mouse_type_t;
+
 class WatchInterface
 {
 private:
@@ -70,7 +77,11 @@ protected:
     display_position_t batteryPos = POSITION_BAR_OFF;
     display_position_t screenPos = POSITION_BAR_OFF;
     display_network_status_t networkStatus = NETWORK_STATUS_DIALOG;
+    mouse_type_t virtualMouse = MOUSE_OFF;
+    float mouseX = 0;
+    float mouseY = 0;
     virtual bool loop();
+    virtual void frameTemplate(String title, String msgDisplay, const uint8_t *icon);
 
 public:
     bool noSleep = false;
@@ -88,8 +99,9 @@ public:
      */
     virtual bool loopStatus();
     virtual void finish();
-    virtual void pressA();
-    virtual void pressB();
+    virtual void pressA(byte count);
+    virtual void pressB(byte count);
+    virtual void update();
 };
 
 #endif

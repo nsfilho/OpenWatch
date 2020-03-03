@@ -31,6 +31,10 @@ Network network = Network();
 /** Controls variables */
 unsigned long wakeupTime = 0;  // Contains wake up (from sleep) millis
 unsigned long lastRefresh = 0; // Control last watchInterface refresh
+unsigned long lastPressA = 0;
+unsigned long lastPressB = 0;
+byte countPressA = 0;
+byte countPressB = 0;
 
 /**
  * Main Setup - Executed after PowerOn and DeepSleep.
@@ -59,27 +63,39 @@ void initScreen(void)
 
 void loop(void)
 {
-    bool updateSprite = false;
     M5.update();
 
     /** Button A: Key pressed */
     if (M5.BtnA.wasPressed() != 0)
     {
+        countPressA++;
         wakeupTime = millis();
-        interfaces.pressA();
+        lastPressA = millis();
+    }
+    else if (countPressA > 0 && millis() - lastPressA > BUTTON_COUNT_TIMEOUT)
+    {
+        interfaces.pressA(countPressA);
+        countPressA = 0;
+        lastPressA = 0;
     }
 
     /** Button B: Key pressed */
     if (M5.BtnB.wasPressed() != 0)
     {
+        countPressB++;
         wakeupTime = millis();
-        interfaces.pressB();
+        lastPressB = millis();
     }
-    updateSprite = update_watch_interface();
+    else if (countPressB > 0 && millis() - lastPressB > BUTTON_COUNT_TIMEOUT)
+    {
+        interfaces.pressB(countPressB);
+        countPressB = 0;
+        lastPressB = 0;
+    }
+    interfaces.update();
+    update_watch_interface();
     network.loop();
     ntpUtils.loop();
-    if (updateSprite)
-        tftSprite.pushSprite(0, 0);
     check_wakeup_timeout();
 }
 
@@ -93,6 +109,8 @@ bool update_watch_interface(void)
     {
         getRTC_info();
         result = interfaces.loopInterface();
+        if (result)
+            tftSprite.pushSprite(0, 0);
         lastRefresh = millis();
     }
     return result;

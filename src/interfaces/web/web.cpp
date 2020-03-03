@@ -17,57 +17,33 @@
  *
  */
 #include "main.h"
-#include "ntpInterface.h"
+#include "web.h"
 #include "../icons.h"
 
-NtpInterface::NtpInterface()
+WebInterface::WebInterface()
 {
-    screenPos = POSITION_BAR_BOTTOM;
+    virtualMouse = MOUSE_WEIGHT;
+    noSleep = true;
 }
 
-bool NtpInterface::setup()
+bool WebInterface::setup()
 {
     WatchInterface::setup();
-    msgToDisplay = "Press B: Start";
-    started = false;
+    msgToDisplay = "Press B: To Count";
+    networkStatus = NETWORK_STATUS_DIALOG;
     return false;
 }
 
-bool NtpInterface::loop()
+bool WebInterface::loop()
 {
     WatchInterface::loop();
-    frameTemplate("NTP > RTC", msgToDisplay, icon_gears);
-    // Check if connection is ready to start update
-    if (started && network.isConnect())
-        startUpdate();
+    frameTemplate("Web > Cfg", msgToDisplay, icon_gears);
     return true;
 }
 
-void NtpInterface::startUpdate()
+void WebInterface::pressB(byte count)
 {
-    started = false;
-    msgToDisplay = "Updating...";
-    loop();
-    ntpUtils.begin();
-    ntpUtils.update();
-    ntpUtils.end();
-    msgToDisplay = "Updated!";
-    loop();
-    network.end();
-    wakeupTime = millis();
-    noSleep = false;
-}
-
-void NtpInterface::pressB(byte count)
-{
-    started = true;
-    noSleep = true;
-    network.begin();
-}
-
-void NtpInterface::finish()
-{
-    WatchInterface::finish();
-    noSleep = false;
-    network.end();
+    // started = true;
+    // network.begin();
+    msgToDisplay = "Total: " + String(count);
 }
