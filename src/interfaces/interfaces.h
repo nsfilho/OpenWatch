@@ -19,25 +19,21 @@
 #ifndef __INTERFACES_H_
 #define __INTERFACES_H_
 #include "watch_interface.h"
+#include <vector>
 
 #define MAX_INTERFACES 10
 
 class Interfaces
 {
 private:
-    WatchInterface *interfaces[MAX_INTERFACES];
-
+    std::vector<WatchInterface *> interfaces;
+    unsigned long lastUpdate = 0;
 public:
-    byte totalInterfaces = 0;
-    void begin();
+    Interfaces();
     void addInterface(WatchInterface *interface);
-    bool setupInterface();
-    void finishInterface();
-    bool loopInterface();
-    void update();
-    void pressA(byte count);
-    void pressB(byte count);
     WatchInterface *getCurrent();
+    WatchInterface *nextInterface();
+    void loop();
 };
 
 #endif

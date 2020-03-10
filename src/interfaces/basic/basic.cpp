@@ -20,10 +20,9 @@
 #include "basic.h"
 #include "rtcutils.h"
 
-BasicInterface::BasicInterface()
+BasicInterface::BasicInterface() : batteryPos(POSITION_BAR_BOTTOM), screenPos(POSITION_BAR_TOP)
 {
-    batteryPos = POSITION_BAR_BOTTOM;
-    screenPos = POSITION_BAR_TOP;
+
 }
 
 bool BasicInterface::loop()

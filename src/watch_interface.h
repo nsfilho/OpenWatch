@@ -85,6 +85,7 @@ protected:
 
 public:
     bool noSleep = false;
+    bool useRTC = true;
 
     /** 
      * Setup a watch interface

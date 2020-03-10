@@ -42,6 +42,15 @@ This command will execute some `git clone` dependencies, as:
 1. M5StickC
 2. NTPClient (Taranis Fork)
 
+## Vim / NeoVim
+
+If you are using VIM or NEOVIM to edit source files, you may need a
+`compile_commands.json` file. To generate then, you can use:
+
+```sh
+platformio run -t compiledb
+```
+
 ### MacOS Developers
 
 Sometimes, you can't write your firmware directly to M5Stick-C. You need do a jumper between `GPIO0` and `GND` before try to upload your code.

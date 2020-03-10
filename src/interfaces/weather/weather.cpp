@@ -30,9 +30,8 @@ byte statusInfo = 0;
 long lastStatusInfo = 0;
 JsonArray cities;
 
-WeatherInterface::WeatherInterface()
+WeatherInterface::WeatherInterface() : useRTC(false), networkStatus(NETWORK_STATUS_SMALL_TOP_RIGHT), batteryPos(POSITION_BAR_BOTTOM)
 {
-    networkStatus = NETWORK_STATUS_SMALL_TOP_RIGHT;
 }
 
 bool WeatherInterface::setup()

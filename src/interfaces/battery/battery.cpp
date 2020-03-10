@@ -20,9 +20,8 @@
 #include "battery.h"
 #include "batteryImgs.h"
 
-BatteryInterface::BatteryInterface()
+BatteryInterface::BatteryInterface(): useRTC(false), screenPos(POSITION_BAR_LEFT)
 {
-    screenPos = POSITION_BAR_LEFT;
 }
 
 bool BatteryInterface::setup()

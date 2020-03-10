@@ -92,28 +92,10 @@ void loop(void)
         countPressB = 0;
         lastPressB = 0;
     }
-    interfaces.update();
-    update_watch_interface();
+    interfaces.loop();
     network.loop();
     ntpUtils.loop();
     check_wakeup_timeout();
-}
-
-/**
- * Routine to update the watch screen interface (time)
- */
-bool update_watch_interface(void)
-{
-    bool result = false;
-    if (millis() - lastRefresh > config.screen_refreshTime)
-    {
-        getRTC_info();
-        result = interfaces.loopInterface();
-        if (result)
-            tftSprite.pushSprite(0, 0);
-        lastRefresh = millis();
-    }
-    return result;
 }
 
 /**

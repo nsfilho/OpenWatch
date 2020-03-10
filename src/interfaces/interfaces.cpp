@@ -25,64 +25,48 @@
 #include "weather/weather.h"
 #include "web/web.h"
 
-NixieTube1 i1 = NixieTube1();
-// NixieTube2 i2 = NixieTube2();
-// NixieTube3 i3 = NixieTube3();
-BatteryInterface i4 = BatteryInterface();
-BasicInterface i5 = BasicInterface();
-WeatherInterface i6 = WeatherInterface();
-NtpInterface i7 = NtpInterface();
-WebInterface i8 = WebInterface();
-
-void Interfaces::begin()
+void Interfaces::Interfaces()
 {
-    addInterface(&i1);
-    // addInterface(&i2);
-    // addInterface(&i3);
-    addInterface(&i4);
-    addInterface(&i5);
-    addInterface(&i6);
-    addInterface(&i7);
-    addInterface(&i8);
+    addInterface(new NixieTube1());
+    addInterface(new BatteryInterface());
+    addInterface(new BasicInterface());
+    addInterface(new WeatherInterface());
+    addInterface(new NtpInterface());
+    addInterface(new WebInterface());
 }
 
 void Interfaces::addInterface(WatchInterface *interface)
 {
-    interfaces[totalInterfaces] = interface;
-    totalInterfaces++;
+    interfaces.push_back(interface);
 }
 
-bool Interfaces::setupInterface()
-{
-    return interfaces[config.screen_watchInterface]->setup();
-}
-
-void Interfaces::finishInterface()
-{
-    interfaces[config.screen_watchInterface]->finish();
-}
-
-bool Interfaces::loopInterface()
-{
-    return interfaces[config.screen_watchInterface]->loopStatus();
-}
-
-void Interfaces::pressA(byte count)
-{
-    interfaces[config.screen_watchInterface]->pressA(count);
-}
-
-void Interfaces::pressB(byte count)
-{
-    interfaces[config.screen_watchInterface]->pressB(count);
-}
-
-void Interfaces::update()
-{
-    interfaces[config.screen_watchInterface]->update();
-}
 
 WatchInterface *Interfaces::getCurrent()
 {
     return interfaces[config.screen_watchInterface];
 }
+
+WatchInterface *Interfaces::nextInterface()
+{
+    getCurrent()->finish();
+    if (config.screen_watchInterface+1 > interfaces.size())
+        config.screen_watchInterface = 0;
+    else
+        config.screen_watchInterface++;
+    return interfaces[config.screen_watchInterface];
+}
+
+void Interfaces::loop()
+{
+    getCurrent()->update();
+    if (millis() - lastUpdate > config.screen_refreshTime) {
+        if (getCurrent()->useRTC)
+            getRTC_info();
+
+        // test if screen was update
+        if (getCurrent()->loop()) {
+            tftSprite.pushSprite(0, 0);
+        }
+    }
+}
+

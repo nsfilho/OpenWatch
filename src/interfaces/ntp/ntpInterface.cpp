@@ -20,9 +20,8 @@
 #include "ntpInterface.h"
 #include "../icons.h"
 
-NtpInterface::NtpInterface()
+NtpInterface::NtpInterface() : useRTC(false), screenPos(POSITION_BAR_BOTTOM)
 {
-    screenPos = POSITION_BAR_BOTTOM;
 }
 
 bool NtpInterface::setup()
